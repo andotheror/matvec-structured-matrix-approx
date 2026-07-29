@@ -1,0 +1,635 @@
+\documentclass[twoside]{article}
+
+\usepackage[preprint]{aistats2027}
+\usepackage[round,authoryear]{natbib}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{url}
+
+\renewcommand{\bibname}{References}
+\renewcommand{\bibsection}{\subsubsection*{\bibname}}
+\bibliographystyle{apalike}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\cL}{\mathcal L}
+\newcommand{\OPT}{\mathrm{OPT}}
+
+\begin{document}
+
+\onecolumn
+\aistatstitle{Supplement: Pure Relative Structured Matrix Approximation with Square-Root Matvecs}
+
+\aistatsauthor{}
+
+\aistatsaddress{}
+
+\appendix
+
+\section{Partial-Trace Covariance}
+\label{app:covariance}
+
+This section proves the concentration lemma used in the main paper. We state
+a slightly more general accuracy form.
+
+\begin{lemma}[Partial-trace Gaussian covariance]
+\label{lem:app-covariance}
+Let $C_1,\ldots,C_q\in\R^{n\times m}$ satisfy
+\begin{equation}
+ K=(\langle C_i,C_j\rangle_F)_{i,j}\preceq I,
+ \qquad
+ \sum_{i=1}^qC_iC_i^\top\preceq\tau I,
+ \label{eq:app-assumptions}
+\end{equation}
+where $\tau\ge1$. For $g\sim N(0,I_m)$, let
+$D(g)=[C_1g,\ldots,C_qg]\in\R^{n\times q}$. There is a universal constant
+$C$ such that, for every $\eta\in(0,1)$ and
+\begin{equation}
+ k\ge \frac{C\tau\log^2(2q)}{\eta^2},
+ \label{eq:app-k}
+\end{equation}
+independent $g_1,\ldots,g_k$ satisfy
+\begin{equation}
+ \left\|\frac1k\sum_{\ell=1}^k
+ D(g_\ell)^\top D(g_\ell)-K\right\|_\op\le\eta
+ \label{eq:app-conclusion}
+\end{equation}
+with probability at least $0.99$.
+\end{lemma}
+
+We use the following standard rectangular form of noncommutative Khintchine
+\citep{buchholz2001operator}. The Gaussian statement follows from the same
+trace-moment proof as the Rademacher statement. It can also be obtained by
+self-adjoint dilation.
+
+\begin{lemma}[Rectangular Gaussian Khintchine]
+\label{lem:nck}
+For fixed real matrices $A_1,\ldots,A_m$ and an integer $p\ge1$,
+\begin{align}
+ &\left(\E\left\|\sum_{a=1}^m g_aA_a\right\|_{S_{2p}}^{2p}
+ \right)^{1/(2p)}\notag\\
+ &\quad\le \sqrt{2p-1}\max\left\{
+ \left\|\left(\sum_aA_aA_a^\top\right)^{1/2}\right\|_{S_{2p}},\right.\notag\\
+ &\hspace{105pt}\left.\left\|\left(\sum_aA_a^\top A_a\right)^{1/2}
+ \right\|_{S_{2p}}\right\}.
+ \label{eq:nck}
+\end{align}
+Here $\|\cdot\|_{S_r}$ denotes the Schatten $r$-norm.
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lem:app-covariance}]
+For each input coordinate $a\in[m]$, define
+\[
+ A_a=[C_1e_a,\ldots,C_qe_a]\in\R^{n\times q}.
+\]
+Then $D(g)=\sum_ag_aA_a$, and direct calculation gives
+\begin{equation}
+ \sum_aA_aA_a^\top=\sum_iC_iC_i^\top\preceq\tau I,
+ \qquad
+ \sum_aA_a^\top A_a=K\preceq I.
+ \label{eq:two-variances}
+\end{equation}
+Both matrices in \eqref{eq:two-variances} have trace $\tr K\le q$.
+Consequently,
+\begin{align}
+ \tr\left(\sum_aA_aA_a^\top\right)^p
+ &\le\tau^{p-1}q,\label{eq:left-trace}\\
+ \tr K^p&\le q.\label{eq:right-trace}
+\end{align}
+Apply Lemma~\ref{lem:nck}, use
+$\|M\|_\op\le\|M\|_{S_{2p}}$, and take $p\ge\log(2q)$. Since
+$q^{1/(2p)}$ is bounded by a universal constant and $\tau\ge1$, we obtain
+\begin{equation}
+ \left(\E\|D(g)\|_\op^{2p}\right)^{1/(2p)}
+ \le C\sqrt{p\tau}.
+ \label{eq:D-moment}
+\end{equation}
+
+Set $Z=D(g)^\top D(g)$, so $\E Z=K$. We next compute its centered matrix
+variance. For a unit vector $\theta\in\R^q$, let
+$C_\theta=\sum_i\theta_iC_i$. Since
+\[
+ \theta^\top Z^2\theta
+ =\sum_{i=1}^q\langle C_ig,C_\theta g\rangle^2,
+\]
+the real Gaussian fourth-moment identity gives
+\begin{align}
+ \theta^\top\E Z^2\theta
+ &=\sum_i\left\{
+ \langle C_i,C_\theta\rangle_F^2
+ +\tr[(C_i^\top C_\theta)^2]\right\}\notag\\
+ &\quad+\sum_i\|C_i^\top C_\theta\|_F^2\notag\\
+ &\le\theta^\top K^2\theta
+ +2\sum_i\|C_i^\top C_\theta\|_F^2\notag\\
+ &=\theta^\top K^2\theta
+ +2\tr\left(C_\theta^\top
+ \sum_iC_iC_i^\top C_\theta\right)\notag\\
+ &\le\theta^\top(K^2+2\tau K)\theta.
+ \label{eq:fourth}
+\end{align}
+The first equality uses
+$\E(g^\top Mg)^2=(\tr M)^2+\tr(M^2)+\tr(MM^\top)$.
+Because $\E(Z-K)^2=\E Z^2-K^2$, equation \eqref{eq:fourth} implies
+\begin{equation}
+ \|\E(Z-K)^2\|_\op\le2\tau.
+ \label{eq:centered-variance}
+\end{equation}
+
+Let $X_\ell=Z_\ell-K$ for independent copies $Z_\ell$. The variance
+parameter of $\sum_\ell X_\ell$ is at most $2k\tau$. We also need the
+large-deviation parameter
+\[
+ L=\left(\E\max_{\ell\le k}\|X_\ell\|_\op^2\right)^{1/2}.
+\]
+For any integer $p\ge\log(2q)$,
+\begin{align*}
+ \|\|X_\ell\|_\op\|_{L_{2p}}
+ &\le \|\|D(g_\ell)\|_\op^2\|_{L_{2p}}+1\\
+ &=\|\|D(g_\ell)\|_\op\|_{L_{4p}}^2+1
+ \le Cp\tau.
+\end{align*}
+The elementary maximum bound gives
+\begin{align*}
+ L
+ &\le\left(\E\max_{\ell\le k}\|X_\ell\|_\op^{2p}
+ \right)^{1/(2p)}\\
+ &\le k^{1/(2p)}\max_{\ell\le k}
+ \|\|X_\ell\|_\op\|_{L_{2p}}.
+\end{align*}
+Taking $p=\lceil\log(2qk)\rceil$ yields
+\begin{equation}
+ L\le C\tau\log(2qk).
+ \label{eq:large-deviation}
+\end{equation}
+
+The expected-norm theorem for independent centered random matrices
+\citep[Theorem I]{tropp2015expected}, applied in dimension $q$, now gives
+\begin{multline}
+ \left(\E\left\|\frac1k\sum_{\ell=1}^kX_\ell\right\|_\op^2
+ \right)^{1/2}\\
+ \le C\sqrt{\frac{\tau\log(2q)}{k}}
+ +\frac{C\tau\log(2q)\log(2qk)}{k}.
+ \label{eq:tropp-application}
+\end{multline}
+
+Let $k_0=C_0\tau\log^2(2q)/\eta^2$. Since $\tau$ may be replaced by
+$\min\{\tau,q\}$, we may assume $\tau\le q$. At $k=k_0$,
+\[
+ \log(2qk)=O(\log(2q)+\log(1/\eta)).
+\]
+The first term of \eqref{eq:tropp-application} is at most $C\eta/\sqrt{\log(2q)}$.
+For the second term, use
+$\eta\log(1/\eta)\le1/e$. Increasing $C_0$ makes the root second moment at
+most $\eta/10$. For $k\ge k_0$, the first term decreases and
+$\log(2qk)/k$ also decreases. Markov's inequality proves
+\eqref{eq:app-conclusion} with probability at least $0.99$.
+\end{proof}
+
+\section{Upper Bound and Amplification}
+\label{app:upper}
+
+We first record basis invariance and observability.
+
+\begin{lemma}[Basis invariance]
+\label{lem:basis}
+The partial traces
+$S_L=\sum_iB_iB_i^\top$ and $S_R=\sum_iB_i^\top B_i$ do not depend on the
+choice of Frobenius-orthonormal basis of $\cL$.
+\end{lemma}
+
+\begin{proof}
+Any two orthonormal bases are related by an orthogonal matrix $U$. If
+$B'_i=\sum_jU_{ij}B_j$, then
+\[
+ \sum_iB'_iB_i'^\top
+ =\sum_{j,k}(U^\top U)_{jk}B_jB_k^\top
+ =\sum_jB_jB_j^\top.
+\]
+The right partial trace is identical after transposition.
+\end{proof}
+
+\begin{lemma}[Observable objective]
+\label{lem:observable}
+Let $P=VV^\top$, where $V\in\R^{n\times s}$ has orthonormal columns. The
+responses $A^\top V$ and $AG$ determine
+\[
+ \|P(A-B)\|_F^2+k^{-1}\|Q(A-B)G\|_F^2
+\]
+for every known $B$.
+\end{lemma}
+
+\begin{proof}
+The left responses determine
+$PA=V(A^\top V)^\top$. Therefore $PAG$ and
+$QAG=AG-PAG$ are known. All terms involving $B$ are known from the basis.
+\end{proof}
+
+\begin{lemma}[Offset variance]
+\label{lem:app-offset}
+Suppose $\sum_iC_iC_i^\top\preceq\lambda I$. For fixed $M$, define
+\[
+ \xi_i=\frac1k\sum_{\ell=1}^k
+ \{\langle Mg_\ell,C_ig_\ell\rangle-\langle M,C_i\rangle_F\}.
+\]
+Then $\E\|\xi\|_2^2\le2\lambda\|M\|_F^2/k$.
+\end{lemma}
+
+\begin{proof}
+For $N=M^\top C_i$, the Gaussian identity
+$\Var(g^\top Ng)=\tr(N^2)+\tr(NN^\top)$ gives
+\[
+ \Var(\langle Mg,C_ig\rangle)\le2\|M^\top C_i\|_F^2.
+\]
+Summing over $i$ and using independence across $\ell$ gives
+\begin{align*}
+ \E\|\xi\|_2^2
+ &\le\frac2k\sum_i\|M^\top C_i\|_F^2\\
+ &=\frac2k\tr\left(M^\top\sum_iC_iC_i^\top M\right)
+ \le\frac{2\lambda}{k}\|M\|_F^2.
+\end{align*}
+\end{proof}
+
+\begin{theorem}[One-orientation upper bound]
+\label{thm:app-upper}
+Fix $s$ and let $\lambda=\lambda_{s+1}^L>0$. For every
+$\gamma\in(0,1)$, if
+\begin{equation}
+ k\ge C\left[
+ \max\{1,\lambda\}\log^2(2q)+\frac{\lambda}{\gamma}
+ \right],
+ \label{eq:app-upper-k}
+\end{equation}
+then the estimator in the main paper satisfies
+\begin{equation}
+ \|\widehat B-B_\star\|_F^2\le\gamma\OPT^2
+ \label{eq:parameter-target}
+\end{equation}
+with probability at least $19/20$.
+\end{theorem}
+
+\begin{proof}
+Let $C_i=QB_i$ and $D(g)=[C_1g,\ldots,C_qg]$. Its Gram matrix
+$K=(\langle C_i,C_j\rangle_F)$ satisfies $K\preceq I$, while
+\[
+ \sum_iC_iC_i^\top=QS_LQ\preceq\lambda I.
+\]
+Set $\tau=\max\{1,\lambda\}$. The Hessian of the objective in the
+orthonormal coordinates of $\cL$ is
+\begin{align*}
+ H&=H_P+\frac1k\sum_{\ell=1}^kD(g_\ell)^\top D(g_\ell),\\
+ (H_P)_{ij}&=\langle PB_i,PB_j\rangle_F.
+\end{align*}
+Because $H_P+K=I$, Lemma~\ref{lem:app-covariance} with $\eta=1/2$ implies
+\begin{equation}
+ H\succeq\frac12I
+ \label{eq:hessian-event}
+\end{equation}
+except with probability $1/100$.
+
+Write $R=A-B_\star$. At $B_\star$, the $i$th normal-equation offset is
+\begin{align*}
+ h_i
+ &=\langle PR,PB_i\rangle_F
+ +\frac1k\sum_{\ell=1}^k
+ \langle QRg_\ell,QB_ig_\ell\rangle.
+\end{align*}
+Orthogonality gives
+\[
+ \langle PR,PB_i\rangle_F+\langle QR,QB_i\rangle_F
+ =\langle R,B_i\rangle_F=0.
+\]
+Thus $h$ is the centered vector in Lemma~\ref{lem:app-offset} with $M=QR$.
+In particular,
+\begin{equation}
+ \E\|h\|_2^2\le\frac{2\lambda}{k}\OPT^2.
+ \label{eq:h-bound}
+\end{equation}
+By Markov's inequality and a sufficiently large constant in
+\eqref{eq:app-upper-k},
+\begin{equation}
+ \|h\|_2^2\le\frac\gamma4\OPT^2
+ \label{eq:offset-event}
+\end{equation}
+except with probability $1/25$.
+
+Let $d$ be the coefficient vector of $\widehat B-B_\star$. On
+\eqref{eq:hessian-event}, the objective is strictly convex and its normal
+equation is $Hd=h$. Therefore
+\[
+ \|\widehat B-B_\star\|_F^2=\|d\|_2^2
+ \le4\|h\|_2^2\le\gamma\OPT^2.
+\]
+A union bound gives success probability at least
+$1-1/100-1/25=19/20$.
+\end{proof}
+
+If $\lambda=0$, then $QB_i=0$ for all $i$. The exact part of the objective
+has Hessian $I$ and recovers $B_\star$ without random queries. The profile in
+the main paper follows by taking $\gamma=2\epsilon$ in
+Theorem~\ref{thm:app-upper} and applying
+\[
+ \|A-\widehat B\|_F^2
+ =\OPT^2+\|\widehat B-B_\star\|_F^2.
+\]
+
+We next prove amplification without estimating $\OPT$ or any residual norm.
+
+\begin{lemma}[Metric median amplification]
+\label{lem:median}
+Let $\widehat B_1,\ldots,\widehat B_r$ be independent candidates, where $r$
+is odd and each candidate satisfies
+\begin{equation}
+ \|\widehat B_i-B_\star\|_F^2\le\gamma\OPT^2
+ \label{eq:good}
+\end{equation}
+with probability at least $19/20$. Let $h=(r+1)/2$. For each $i$, let
+$\rho_i$ be the $h$th smallest value among
+$\{\|\widehat B_i-\widehat B_j\|_F:j\in[r]\}$. Return a candidate minimizing
+$\rho_i$. There is a universal $C$ such that $r\ge C\log(1/\delta)$ implies
+\begin{equation}
+ \|\widehat B-B_\star\|_F^2\le9\gamma\OPT^2
+ \label{eq:median-conclusion}
+\end{equation}
+with probability at least $1-\delta$.
+\end{lemma}
+
+\begin{proof}
+A Chernoff bound shows that at least $h$ candidates satisfy \eqref{eq:good}
+with probability at least $1-\delta$. Condition on this event. Every good
+candidate has at least $h$ good candidates within distance
+$2\sqrt\gamma\OPT$, so its radius is at most this value. The selected
+candidate has radius no larger. Its radius ball contains at least $h$
+candidates, and the good set also has at least $h$ members. Since $2h>r$,
+the two sets intersect. If $\widehat B_j$ is in their intersection, then
+\[
+ \|\widehat B-B_\star\|_F
+ \le\|\widehat B-\widehat B_j\|_F
+ +\|\widehat B_j-B_\star\|_F
+ \le3\sqrt\gamma\OPT.
+\]
+\end{proof}
+
+Take $\gamma=2\epsilon/9$ in Lemma~\ref{lem:median}. Then
+\[
+ \|A-\widehat B\|_F^2
+ \le(1+2\epsilon)\OPT^2
+ \le(1+\epsilon)^2\OPT^2.
+\]
+The same exact responses $A^\top V$ are reused for all candidates. Only the
+Gaussian stage is repeated, proving the confidence statement in the main
+paper.
+
+\section{Lower Bounds}
+\label{app:lower}
+
+\subsection{Exact-recovery dimension bound}
+
+\begin{proposition}
+\label{prop:dimension-lower}
+For $q=r^2$, some $q$-dimensional linear family requires at least $r$ adaptive
+two-sided queries for any finite multiplicative approximation guarantee with
+positive worst-case success probability.
+\end{proposition}
+
+\begin{proof}
+Take $\cL=\R^{r\times r}$ and draw $A$ from a nondegenerate Gaussian
+distribution on this space. Fix a deterministic adaptive algorithm using
+$t<r$ queries. Conditional on any transcript up to a given round, the next
+query vector is fixed. Its response gives at most $r$ scalar linear
+constraints on the $r^2$ entries of $A$, whether the orientation is $A$ or
+$A^\top$. Sequential Gaussian conditioning shows that after $t$ rounds the
+conditional law remains Gaussian on an affine space of dimension at least
+$r^2-tr>0$. It is non-atomic. No transcript-measurable output equals $A$ with
+positive probability.
+
+For every $A\in\cL$, the optimum residual is zero. Any finite multiplicative
+guarantee must output $A$ exactly. Therefore every deterministic algorithm
+has zero average success under the Gaussian prior. Yao's principle rules out
+a randomized algorithm with positive worst-case success.
+\end{proof}
+
+\subsection{One-parameter accuracy bound}
+
+We give the deferred-decisions argument and constants for the one-parameter
+proposition in the main paper. Write
+$G\sim\operatorname{GOE}_d$ when the diagonal entries of $G$ are independent
+$N(0,2)$ variables and its entries strictly above the diagonal are
+independent $N(0,1)$ variables, with symmetry below the diagonal.
+
+\begin{lemma}[Adaptive GOE residual]
+\label{lem:goe-residual}
+Fix a deterministic adaptive algorithm that queries a symmetric matrix by
+matvecs. After $t$ linearly independent queries to
+$G\sim\operatorname{GOE}_d$, there is a transcript-measurable orthogonal
+matrix $U_t$ such that, conditionally on the transcript,
+\begin{equation}
+ U_t^\top G U_t=\Delta_t+
+ \begin{bmatrix}
+  0_{t\times t}&0\\
+  0&H_t
+ \end{bmatrix},
+ \qquad H_t\sim\operatorname{GOE}_{d-t},
+ \label{eq:goe-residual}
+\end{equation}
+where $\Delta_t$ is transcript measurable and $H_t$ is independent of the
+transcript.
+\end{lemma}
+
+\begin{proof}
+Repeated queries and components in the span of previous queries reveal no new
+information, so Gram--Schmidt reduces to orthonormal query directions. We
+prove the claim by induction. It is immediate for $t=0$. Suppose it holds
+after $t$ queries. In the coordinates of \eqref{eq:goe-residual}, the next
+new query has a nonzero component in the last $d-t$ coordinates. Conditional
+on the transcript, rotate only those coordinates so that its normalized new
+component is the first coordinate. Rotational invariance leaves $H_t$ GOE.
+The response reveals the first row and column of this rotated $H_t$. By the
+independent-entry definition of GOE, its remaining principal block is an
+independent $\operatorname{GOE}_{d-t-1}$ matrix. Absorb every revealed entry
+into $\Delta_{t+1}$. This proves the induction, including when each query is
+chosen from all earlier responses.
+\end{proof}
+
+\begin{proposition}[One-parameter accuracy lower bound]
+\label{prop:app-one-parameter}
+For all sufficiently small $\epsilon>0$, some one-dimensional linear family
+requires $\Omega(1/\sqrt\epsilon)$ adaptive two-sided queries for success
+probability at least $2/3$ at relative error $1+\epsilon$.
+\end{proposition}
+
+\begin{proof}
+Set $c=1/100$, let $d=\lfloor c/\sqrt\epsilon\rfloor$, and take
+\[
+ \cL=\operatorname{span}\{I_d/\sqrt d\},
+ \qquad A\sim\operatorname{GOE}_d.
+\]
+The input is symmetric, so a transpose query reveals the same response as a
+forward query. It is enough by Yao's principle to fix a deterministic
+adaptive algorithm. Its output is $\widehat\beta I_d/\sqrt d$, while the
+optimal coefficient is $\beta_\star=\tr(A)/\sqrt d$.
+
+After $t\le d/2$ informative queries, Lemma~\ref{lem:goe-residual} shows that
+the unknown part of $\beta_\star$, conditionally on the transcript, is
+\[
+ \frac{\tr(H_t)}{\sqrt d}\sim
+ N\left(0,\frac{2(d-t)}d\right).
+\]
+Its conditional variance is at least one. The density of a Gaussian with
+variance at least one is everywhere at most $1/\sqrt{2\pi}$. Hence, for every
+transcript-measurable estimate $\widehat\beta$ and every $a>0$,
+\begin{equation}
+ \Pr\bigl\{|\widehat\beta-\beta_\star|\le a
+       \mid\text{transcript}\bigr\}
+ \le\frac{2a}{\sqrt{2\pi}}.
+ \label{eq:goe-small-ball}
+\end{equation}
+
+We have $\E\|A\|_F^2=d(d+1)$, so Markov's inequality gives the event
+\begin{equation}
+ \OPT^2\le\|A\|_F^2\le10d(d+1)
+ \label{eq:goe-norm-event}
+\end{equation}
+with probability at least $0.9$. For $\epsilon\le1$, a successful
+$(1+\epsilon)$ approximation must obey
+\begin{align*}
+ (\widehat\beta-\beta_\star)^2
+ &\le\bigl((1+\epsilon)^2-1\bigr)\OPT^2\\
+ &\le3\epsilon\OPT^2.
+\end{align*}
+On \eqref{eq:goe-norm-event}, the right side is at most
+$30\epsilon d(d+1)\le60c^2$. Apply \eqref{eq:goe-small-ball} with
+$a=\sqrt{60}c$. The total success probability is at most
+\[
+ \frac1{10}+\frac{2\sqrt{60}c}{\sqrt{2\pi}}<\frac16.
+\]
+For sufficiently small $\epsilon$, we also have
+$d\ge c/(2\sqrt\epsilon)$. Therefore success probability $2/3$ requires
+more than $d/2=\Omega(1/\sqrt\epsilon)$ queries under this input
+distribution. Yao's principle gives the claimed worst-case lower bound for
+randomized algorithms.
+\end{proof}
+
+\subsection{Joint accuracy bound}
+
+We state the source theorem in the form needed here. It is Theorem 2 of
+\citet{amsel2026fixed}, together with the dimension choice in its proof.
+
+\begin{proposition}[Fixed-sparsity Wishart lower bound]
+\label{prop:source-lower}
+Fix $\alpha\in(0,1)$. There are constants $a,b,c_0,c_1>0$ such that, for
+every integer $u\ge1$ and $\epsilon<c_0$, one can choose
+\begin{equation}
+ a\frac{u}{\epsilon}\le d\le b\frac{u}{\epsilon}+1
+ \label{eq:d-range}
+\end{equation}
+and a symmetric Wishart distribution on $d\times d$ matrices with this
+property. For every mask having between $\alpha u$ and $u$ entries in every
+row and column, any possibly randomized adaptive algorithm using fewer than
+$c_1u/\epsilon$ matvec queries has probability at most $1/25$ of returning a
+$(1+\epsilon)$ fixed-mask approximation.
+\end{proposition}
+
+The source theorem is stated for forward queries. Its hard matrix is
+symmetric, so allowing transpose queries does not enlarge the transcript.
+
+\begin{theorem}[Joint lower bound for linear families]
+\label{thm:joint-lower}
+There are universal constants $c,c_0,c_2>0$ such that, whenever
+$\epsilon<c_0$ and $q\epsilon\ge c_2$, some $q$-dimensional linear family
+requires at least $c\sqrt{q/\epsilon}$ possibly adaptive two-sided queries
+for constant-probability $(1+\epsilon)$ approximation.
+\end{theorem}
+
+\begin{proof}
+For each $u$ and $d$ in Proposition~\ref{prop:source-lower}, choose a cyclic
+$u$-regular mask $S\in\{0,1\}^{d\times d}$. This exists after reducing
+$c_0$ if necessary so that $d\ge u$. The coordinate family
+\[
+ \cL_0=\{B:B=S\circ B\}
+\]
+has dimension
+\begin{equation}
+ q_0=du=\Theta(u^2/\epsilon).
+ \label{eq:q0}
+\end{equation}
+Proposition~\ref{prop:source-lower} gives query lower bound
+\begin{equation}
+ \Omega(u/\epsilon)=\Omega(\sqrt{q_0/\epsilon}).
+ \label{eq:source-rate}
+\end{equation}
+
+Given $q$ with $q\epsilon$ above a large enough constant, choose
+$u=\lfloor c_3\sqrt{q\epsilon}\rfloor$ for a sufficiently small universal
+$c_3$. Equations \eqref{eq:d-range} and \eqref{eq:q0} ensure
+$c_4q\le q_0\le q$ for a universal $c_4>0$. Rounding changes only constants.
+
+Let $p=q-q_0$. On a disjoint $p\times p$ block, let $\mathcal D_p$ be the
+diagonal coordinate family, and define
+\[
+ \cL=\{B_0\oplus D:B_0\in\cL_0,\ D\in\mathcal D_p\}.
+\]
+This family has dimension exactly $q$. Embed a hard input as
+$A'=A_0\oplus0$. Its best approximation in $\cL$ is
+$(S\circ A_0)\oplus0$, and its optimum residual equals the original one.
+
+Suppose an algorithm succeeds for $\cL$. A query to $A'$ with vector
+$(x,z)$ returns $(A_0x,0)$, and a transpose query is identical. Thus every
+query can be simulated using one query to $A_0$. The algorithm's output has
+the form $\widehat B_0\oplus\widehat D$. Success implies
+\begin{align*}
+ \|A_0-\widehat B_0\|_F^2
+ &\le\|A_0-\widehat B_0\|_F^2+\|\widehat D\|_F^2\\
+ &\le(1+\epsilon)^2
+ \|A_0-S\circ A_0\|_F^2.
+\end{align*}
+Hence restriction to the first block solves the source problem. By
+\eqref{eq:source-rate} and $q_0\ge c_4q$, the required number of queries is
+$\Omega(\sqrt{q/\epsilon})$.
+\end{proof}
+
+\section{Profiles for Basic Families}
+\label{app:examples}
+
+\paragraph{Coordinate subspaces.}
+For a binary mask $S$, use basis matrices $E_{ij}$ at its nonzero locations.
+Then
+\begin{align*}
+ S_L&=\operatorname{diag}(d_1^{\rm row},\ldots,d_n^{\rm row}),\\
+ S_R&=\operatorname{diag}(d_1^{\rm col},\ldots,d_m^{\rm col}).
+\end{align*}
+The spectral split exactly queries selected high-degree rows or columns and
+uses a Gaussian fit on the remainder.
+
+\paragraph{Full rectangular block.}
+For all matrices supported on an $a\times b$ block,
+$S_L=bI_a$ on the row block and $S_R=aI_b$ on the column block. Taking
+$s=a$ in the left profile or $s=b$ in the right profile recovers the block
+exactly in $\min\{a,b\}$ queries. For $a=b=\sqrt q$, this matches
+Proposition~\ref{prop:dimension-lower}.
+
+\paragraph{Row star.}
+For a single active row with $q$ independent entries, $S_L=qee^\top$. One
+left query in direction $e$ observes the entire structured component and
+gives exact recovery.
+
+\paragraph{Diagonal family.}
+For the $q\times q$ diagonal family, $S_L=S_R=I_q$. Taking $s=0$ gives
+$O(\log^2(2q)+1/\epsilon)$ queries. The specialized rowwise inverse-Wishart
+analysis removes the logarithmic term \citep{amsel2026fixed}. This example
+shows that the universal profile is adaptive to diffuse leverage, even though
+the general matrix-concentration proof is not logarithmically sharp.
+
+\bibliography{references}
+
+\end{document}

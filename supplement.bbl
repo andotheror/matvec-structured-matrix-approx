@@ -1,0 +1,21 @@
+\begin{thebibliography}{}
+
+\bibitem[Amsel et~al., 2026]{amsel2026fixed}
+Amsel, N., Chen, T., Duman~Keles, F., Halikias, D., Musco, C., and Musco, C.
+  (2026).
+\newblock Fixed-sparsity matrix approximation from matrix-vector products.
+\newblock {\em SIAM Journal on Matrix Analysis and Applications},
+  47(2):483--511.
+
+\bibitem[Buchholz, 2001]{buchholz2001operator}
+Buchholz, A. (2001).
+\newblock Operator {K}hintchine inequality in non-commutative probability.
+\newblock {\em Mathematische Annalen}, 319(1):1--16.
+
+\bibitem[Tropp, 2015]{tropp2015expected}
+Tropp, J.~A. (2015).
+\newblock The expected norm of a sum of independent random matrices: An
+  elementary approach.
+\newblock {\em arXiv preprint arXiv:1506.04711}.
+
+\end{thebibliography}

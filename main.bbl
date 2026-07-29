@@ -1,0 +1,75 @@
+\begin{thebibliography}{}
+
+\bibitem[Amsel et~al., 2026a]{amsel2026query}
+Amsel, N., Avi, P., Chen, T., Duman~Keles, F., Hegde, C., Musco, C., Musco, C.,
+  and Persson, D. (2026a).
+\newblock Query efficient structured matrix learning.
+\newblock In {\em Proceedings of the Thirty-Ninth Conference on Learning
+  Theory}, volume 336 of {\em Proceedings of Machine Learning Research}, pages
+  158--194. PMLR.
+
+\bibitem[Amsel et~al., 2026b]{amsel2026fixed}
+Amsel, N., Chen, T., Duman~Keles, F., Halikias, D., Musco, C., and Musco, C.
+  (2026b).
+\newblock Fixed-sparsity matrix approximation from matrix-vector products.
+\newblock {\em SIAM Journal on Matrix Analysis and Applications},
+  47(2):483--511.
+
+\bibitem[Buchholz, 2001]{buchholz2001operator}
+Buchholz, A. (2001).
+\newblock Operator {K}hintchine inequality in non-commutative probability.
+\newblock {\em Mathematische Annalen}, 319(1):1--16.
+
+\bibitem[Chen and Price, 2019]{chen2019active}
+Chen, X. and Price, E. (2019).
+\newblock Active regression via linear-sample sparsification.
+\newblock In {\em Proceedings of the Thirty-Second Conference on Learning
+  Theory}, volume~99 of {\em Proceedings of Machine Learning Research}, pages
+  663--695. PMLR.
+
+\bibitem[Dharangutte and Musco, 2023]{dharangutte2023tight}
+Dharangutte, P. and Musco, C. (2023).
+\newblock A tight analysis of hutchinson's diagonal estimator.
+\newblock In {\em Symposium on Simplicity in Algorithms}, pages 353--364. SIAM.
+
+\bibitem[Epperly and Webber, 2026]{epperly2026sharp}
+Epperly, E.~N. and Webber, R.~J. (2026).
+\newblock Sharp analysis of sketched least squares and randomized low-rank
+  approximation.
+\newblock {\em arXiv preprint arXiv:2605.19096}.
+
+\bibitem[Halikias et~al., 2026]{halikias2026transpose}
+Halikias, D., Hochstenbach, M.~E., and Townsend, A. (2026).
+\newblock Transpose-free linear algebra.
+\newblock {\em arXiv preprint arXiv:2606.01335}.
+
+\bibitem[Halikias and Townsend, 2024]{halikias2024structured}
+Halikias, D. and Townsend, A. (2024).
+\newblock Structured matrix recovery from matrix-vector products.
+\newblock {\em Numerical Linear Algebra with Applications}, 31(1):e2531.
+
+\bibitem[Larsen and Kolda, 2022]{larsen2020practical}
+Larsen, B.~W. and Kolda, T.~G. (2022).
+\newblock Practical leverage-based sampling for low-rank tensor decomposition.
+\newblock {\em SIAM Journal on Matrix Analysis and Applications},
+  43(3):1488--1517.
+
+\bibitem[Larsen and Kolda, 2026]{larsen2026revisiting}
+Larsen, B.~W. and Kolda, T.~G. (2026).
+\newblock Revisiting approximate leverage score sketching for matrix least
+  squares.
+\newblock {\em arXiv preprint arXiv:2201.10638}.
+
+\bibitem[Musco and Ramesh, 2026]{musco2026instance}
+Musco, C. and Ramesh, I. (2026).
+\newblock Nearly instance optimal sparse matrix approximation from
+  matrix-vector products.
+\newblock {\em arXiv preprint arXiv:2606.12179}.
+
+\bibitem[Tropp, 2015]{tropp2015expected}
+Tropp, J.~A. (2015).
+\newblock The expected norm of a sum of independent random matrices: An
+  elementary approach.
+\newblock {\em arXiv preprint arXiv:1506.04711}.
+
+\end{thebibliography}
