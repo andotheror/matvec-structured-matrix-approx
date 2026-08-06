@@ -31,7 +31,7 @@ $$
 **Proposition.** Among all rank-$s$ orthogonal projectors $P$, 
 
 $$
- \min_{\operatorname{rank}(P)=s}\Lambda_L(P)=\lambda_{s+1}^L. 
+ \min_{\mathrm{rank}(P)=s}\Lambda_L(P)=\lambda_{s+1}^L. 
 $$
 
  Thus the leading eigenspace minimizes both random-query terms in (eq. in paper).
