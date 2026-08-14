@@ -6,6 +6,7 @@
 \usepackage{mathtools}
 \usepackage{microtype}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage{url}
 
 \renewcommand{\bibname}{References}
@@ -30,11 +31,11 @@
 \runningauthor{}
 
 \twocolumn[
-\aistatstitle{Pure Relative Structured Matrix Approximation with Square-Root Matvecs}
+\aistatstitle{Pure Relative Structured Matrix Learning with Square-Root Matvecs}
 
 \aistatsauthor{Pahan Dewasurendra}
 
-\aistatsaddress{Johns Hopkins University\\[4pt] July 29, 2026}
+\aistatsaddress{Johns Hopkins University}
 ]
 
 \begin{abstract}
@@ -68,17 +69,30 @@ $O(\lambda_{s+1}\OPT^2/k)$. A median construction amplifies success without
 estimating residual norms. Finally, a symmetric Wishart lower bound for
 fixed-sparsity approximation yields $\Omega(\sqrt{q/\epsilon})$ adaptive
 two-sided queries when $q\epsilon$ is bounded below. Thus the universal rate
-is optimal up to logarithmic factors in this joint regime.
+is optimal up to logarithmic factors in this joint regime. We also show that
+the transformed profile gives pure relative reducible prediction risk under known
+input and output covariances. For structured positive-definite precisions, it
+further controls Gaussian KL error and preconditioned condition number.
 \end{abstract}
 
 \section{Introduction}
 
 Matrix-vector products are the basic access primitive for implicit Hessians,
-linear solution operators, kernel matrices, and matrix functions. When a
+linear predictors, kernel matrices, and matrix functions. When a
 matrix $A$ is too large to form, one may still apply $x\mapsto Ax$ and, when
 an adjoint is available, $y\mapsto A^\top y$. This motivates a statistical
 question: how many such queries reveal the best structured approximation to
 $A$?
+
+This question includes a structured prediction problem. If
+$Y=AX+\eta$ and only input-output experiments with the unknown linear operator
+are available, then approximating $A$ under the covariance of $X$ is exactly
+approximating the reducible prediction risk. It also includes matrix-free
+curvature compression: automatic differentiation supplies Hessian-vector
+products without materializing a Hessian, while a structured precision can
+define a scalable Gaussian approximation or preconditioner. Our results apply
+agnostically in both cases. The target operator need only be near the proposed
+structure.
 
 We study a known linear matrix family $\cL\subseteq\R^{n\times m}$ of
 dimension $q$. Given two-sided matvec access to an arbitrary $A$, the goal is
@@ -129,7 +143,7 @@ leverage times logarithmic factors. The second costs the same leverage divided
 by $\epsilon$. Optimizing where to split gives square-root complexity.
 
 \paragraph{Contributions.}
-Our results are entirely theoretical.
+Our principal results are theoretical.
 \begin{itemize}
 \item We give a nonadaptive, polynomial-time algorithm satisfying
 \eqref{eq:goal} for every rectangular linear family. Its query complexity is
@@ -150,6 +164,12 @@ $\Omega(\sqrt{q/\epsilon})$ for general $q$-dimensional linear families when
 $q\epsilon=\Omega(1)$. This matches our upper bound up to logarithms. A
 separate GOE construction shows that $\Omega(1/\sqrt\epsilon)$ queries can be
 necessary even for a one-dimensional family.
+
+\item We lift the theorem to covariance-weighted prediction loss without
+changing its query count. For positive-definite precision matrices, the same
+output controls both Gaussian KL divergence and preconditioning quality.
+Circulant, Toeplitz, and known-graph precision families give explicit
+dimension-adaptive profiles.
 \end{itemize}
 
 \paragraph{Why two sides matter.}
@@ -313,6 +333,18 @@ term in \eqref{eq:left-profile} by $C\log(1/\delta)$, and likewise for the
 right profile.
 \end{theorem}
 
+\paragraph{Computation model.}
+The polynomial-time statement uses real arithmetic and an explicit linearly
+independent basis. A nonorthonormal basis is whitened through its $q\times q$
+Frobenius Gram matrix. The partial trace is then formed explicitly, a symmetric
+eigenproblem is solved, and \eqref{eq:estimator} is a least-squares problem in
+$q$ unknowns. No eigengap is required: for any computed rank-$s$ projector,
+the guarantee holds with the directly certifiable residual leverage
+$\Lambda_L(P)$ in \eqref{eq:projector-profile}. On the covariance event the
+least-squares Hessian has smallest eigenvalue at least $1/2$. Bit complexity
+still depends on the conditioning of the supplied basis, which we do not hide
+inside the query bound.
+
 The leading eigenspace is not merely convenient. It is the best rank-$s$
 choice for this estimator. For an arbitrary rank-$s$ orthogonal projector
 $P$, define its residual leverage
@@ -367,19 +399,129 @@ the exact queries already cover the row support of $\cL$. Otherwise the two
 $s$-dependent terms are both $O(\sqrt{qL_\epsilon})$.
 \end{proof}
 
-\paragraph{Examples.}
-The profile is more informative than the universal bound. For a full
-$a\times b$ block family, $q=ab$, and exact recovery uses
-$\min\{a,b\}$ queries. A balanced block gives the familiar $\sqrt q$
-barrier. A row-star family is exact after one left query. For the diagonal
-family, $S_L=I$ and the randomized stage uses
-$O(\log^2q+1/\epsilon)$ queries, matching the dimension-free behavior of
-specialized diagonal estimators up to logarithms
-\citep{amsel2026fixed,dharangutte2023tight}. For a coordinate subspace, the
-partial traces are the row and column degree matrices. The algorithm exactly
-removes high-degree rows or columns before sketching the rest. This is a
-spectral analogue of sparse-pattern peeling, although graph degeneracy can
-give a sharper profile for particular masks \citep{musco2026instance}.
+\section{Statistical Consequences and Concrete Profiles}
+\label{sec:statistics}
+
+The Frobenius objective is not tied to isotropic inputs. Let
+$\Gamma\succ0$ and $\Omega\succ0$ be known input and output weights and define
+\begin{equation}
+ \|M\|_{\Omega,\Gamma}^2
+ =\|\Omega^{1/2}M\Gamma^{1/2}\|_F^2.
+ \label{eq:weighted-norm}
+\end{equation}
+Transform the operator and family by
+$A'=\Omega^{1/2}A\Gamma^{1/2}$ and
+$\cL'=\Omega^{1/2}\cL\Gamma^{1/2}$. A right query to $A'$ is implemented by
+querying $A$ at $\Gamma^{1/2}g$, then multiplying the response by
+$\Omega^{1/2}$. A left query is implemented analogously. Thus whitening costs
+no additional oracle calls.
+
+\begin{corollary}[Structured prediction risk]
+\label{cor:prediction}
+Let $Y=AX+\eta$, where $\E[\eta\mid X]=0$ and
+$\E[XX^\top]=\Gamma$. Given two-sided queries to $A$, the transformed profile
+of Theorem~\ref{thm:profile} returns $\widehat B\in\cL$ such that
+\begin{multline}
+ \E\|\Omega^{1/2}(Y-\widehat BX)\|_2^2-\mathsf N\\
+ \le(1+\epsilon)\min_{B\in\cL}
+ \left\{\E\|\Omega^{1/2}(Y-BX)\|_2^2-\mathsf N\right\},
+ \label{eq:prediction-risk}
+\end{multline}
+with probability at least $0.9$, where
+$\mathsf N=\E\|\Omega^{1/2}\eta\|_2^2$. The profile uses a basis orthonormal
+under \eqref{eq:weighted-norm} and its corresponding weighted partial traces.
+\end{corollary}
+
+\begin{proof}
+The conditional mean assumption gives
+$\E\|\Omega^{1/2}(Y-BX)\|_2^2
+=\mathsf N+\|A-B\|_{\Omega,\Gamma}^2$.
+Apply Theorem~\ref{thm:profile} to $(A',\cL')$ with
+$\epsilon'=\sqrt{1+\epsilon}-1\ge\epsilon/3$, then square its guarantee.
+Replacing $\epsilon$ by $\epsilon'$ changes the profile by only a universal
+constant.
+\end{proof}
+
+This statement is distribution-free beyond second moments. Gaussian probes
+are an experimental design chosen by the algorithm, not an assumption on
+$X$. The result is therefore an oracle-complexity theorem for the best
+structured linear predictor under a specified deployment covariance.
+
+For Gaussian uncertainty quantification, the matrix approximation also has a
+direct distributional consequence.
+
+\begin{corollary}[Structured Gaussian precision]
+\label{cor:precision}
+Suppose $A=A^\top\succeq\mu I$, every matrix in $\cL$ is symmetric, and set
+$r=(1+\epsilon)\OPT/\mu<1$. The output of
+Theorem~\ref{thm:profile} is positive definite and satisfies
+\begin{align}
+ \mathrm{KL}\!\left(N(0,A^{-1})\,\|\,N(0,\widehat B^{-1})\right)
+ &\le \frac{(1+\epsilon)^2\OPT^2}{4\mu^2(1-r)},
+ \label{eq:kl-bound}\\
+ \kappa(\widehat B^{-1/2}A\widehat B^{-1/2})
+ &\le\frac{1+r}{1-r}.
+ \label{eq:precondition-bound}
+\end{align}
+\end{corollary}
+
+\begin{proof}
+Let $E=A^{-1/2}(\widehat B-A)A^{-1/2}$. Then
+$\|E\|_\op\le r$, which proves positive definiteness and
+\eqref{eq:precondition-bound}. If $e_i$ are the eigenvalues of $E$, the KL
+divergence is $\frac12\sum_i[e_i-\log(1+e_i)]$. For
+$|e_i|\le r$, the summand is at most $e_i^2/[2(1-r)]$. Finally,
+$\|E\|_F\le\|A-\widehat B\|_F/\mu$.
+\end{proof}
+
+Table~\ref{tab:profiles} makes the spectral profile explicit for statistical
+structures. For real Toeplitz matrices, the normalized diagonal basis gives
+the $i$th partial-trace entry
+$H_n-H_{i-1}+H_{n-1}-H_{n-i}$, so its maximum is $H_n$. For a known graph
+precision model, use $E_{ii}$ on vertices and
+$(E_{ij}+E_{ji})/\sqrt2$ on edges. The partial trace is diagonal with entry
+$1+\deg(i)/2$. Exact queries can therefore remove hubs before the random
+stage.
+
+\begin{table}[t]
+\centering
+\caption{Constant-success profile examples. Tildes hide logarithmic factors.}
+\label{tab:profiles}
+\small
+\begin{tabular}{lccc}
+\toprule
+Family & $q$ & $\|S_L\|_\op$ & Queries \\
+\midrule
+Circulant & $n$ & $1$ & $\widetilde O(1/\epsilon)$ \\
+Toeplitz & $2n-1$ & $H_n$ & $\widetilde O(\log n/\epsilon)$ \\
+Graph precision & $n+|E|$ & $1+\Delta/2$ & $\widetilde O((1+\Delta)/\epsilon)$ \\
+$a\times b$ block & $ab$ & $b$ & $\min\{a,b\}$ exact \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For diagonal matrices, $S_L=I$ and the random stage similarly uses
+$O(\log^2q+1/\epsilon)$ queries, matching specialized dimension-free behavior
+up to logarithms \citep{amsel2026fixed,dharangutte2023tight}. For an arbitrary
+coordinate subspace, the partial traces are row and column degree matrices.
+Graph degeneracy can give a sharper sparse-only profile
+\citep{musco2026instance}, while our theorem also covers dense overlapping
+bases and weighted prediction loss.
+
+Figure~\ref{fig:profiles} is a small falsification check rather than evidence
+for the theorem. We generated a unit random residual, projected it exactly
+orthogonal to each family, and solved the right-sketch least-squares problem
+over 120 independent sketches. The median squared excess follows the predicted
+$1/k$ behavior once the random design is nonsingular. Dotted curves show the
+90th percentile. The supplement gives the complete protocol and seed.
+
+\begin{figure}[t]
+ \centering
+ \includegraphics[width=\columnwidth]{profile_experiment.pdf}
+ \caption{Relative squared excess for three $32\times32$ families. The dashed
+ line has slope $1/k$.}
+ \label{fig:profiles}
+\end{figure}
 
 \section{Proof of the Upper Bound}
 \label{sec:proof}
@@ -732,6 +874,26 @@ active regression needs $\Theta(q/\epsilon)$ scalar labels
 proportional to design rank divided by sketch size
 \citep{epperly2026sharp}. The two-sided tensor structure is what permits a
 square-root improvement.
+
+Hierarchical matrix approximation addresses important nonlinear families that
+are outside our fixed linear-subspace model. The HODLR algorithm of
+\citet{chen2025hodlr} uses robust recursive peeling and obtains
+$(1+\epsilon)$ error in $O(k\log^4(n)/\epsilon^3)$ matvecs. The HSS method of
+\citet{amsel2026hss} obtains an $O(\log(n/k))$ expected squared-error factor with
+$O(k\log(n/k))$ queries. These specialized guarantees exploit low-rank block
+geometry that cannot be represented by one $q$-dimensional linear family.
+Conversely, they do not give pure relative error for arbitrary dense linear
+constraints. Recent adaptive matrix-free low-rank work chooses an unknown
+numerical rank using residual indicators and emphasizes floating-point
+performance \citep{smith2026adaptive}. It is complementary to our fixed-family
+agnostic query theorem.
+
+Structured covariance and curvature approximation motivate the weighted and
+positive-definite consequences in Section~\ref{sec:statistics}. We do not
+claim a sample-based covariance estimator. Corollary~\ref{cor:prediction}
+instead quantifies how many exact operator experiments recover the best
+structured prediction rule, while Corollary~\ref{cor:precision} translates its
+error into Gaussian and optimization criteria.
 
 Our logarithmic factors come from controlling unbounded Gaussian covariance
 summands through noncommutative Khintchine and a general expected-norm

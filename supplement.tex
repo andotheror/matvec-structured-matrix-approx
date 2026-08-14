@@ -27,13 +27,14 @@
 \newcommand{\OPT}{\mathrm{OPT}}
 
 \begin{document}
+\runningauthor{}
 
 \onecolumn
-\aistatstitle{Supplement: Pure Relative Structured Matrix Approximation with Square-Root Matvecs}
+\aistatstitle{Supplement: Pure Relative Structured Matrix Learning with Square-Root Matvecs}
 
-\aistatsauthor{}
+\aistatsauthor{Pahan Dewasurendra}
 
-\aistatsaddress{}
+\aistatsaddress{Johns Hopkins University}
 
 \appendix
 
@@ -629,6 +630,64 @@ $O(\log^2(2q)+1/\epsilon)$ queries. The specialized rowwise inverse-Wishart
 analysis removes the logarithmic term \citep{amsel2026fixed}. This example
 shows that the universal profile is adaptive to diffuse leverage, even though
 the general matrix-concentration proof is not logarithmically sharp.
+
+\paragraph{Circulant family.}
+Let $P_j$ be the $j$th cyclic shift permutation. The matrices
+$B_j=P_j/\sqrt n$ form a Frobenius-orthonormal basis, and
+\[
+ \sum_{j=0}^{n-1}B_jB_j^\top
+ =\sum_{j=0}^{n-1}\frac1n I=I.
+\]
+Thus $s=0$ gives $O(\log^2(2n)+1/\epsilon)$ queries.
+
+\paragraph{Toeplitz family.}
+For offset $j\in\{-(n-1),\ldots,n-1\}$, let $T_j$ be the binary matrix on
+the $j$th diagonal and set $B_j=T_j/\sqrt{n-|j|}$. These matrices form an
+orthonormal basis. Their left partial trace is diagonal. At row $i$ its entry
+is
+\begin{align*}
+ [S_L]_{ii}
+ &=\sum_{j=0}^{n-i}\frac1{n-j}
+   +\sum_{h=1}^{i-1}\frac1{n-h}\\
+ &=H_n-H_{i-1}+H_{n-1}-H_{n-i}.
+\end{align*}
+The maximum is $H_n$, attained at an endpoint. The right partial trace is the
+reflection of the same diagonal. Taking $s=0$ therefore gives
+$O(H_n[\log^2(4n)+1/\epsilon])$ queries.
+
+\paragraph{Known-graph symmetric precision family.}
+For a graph $G=(V,E)$ on $n$ vertices, take basis $E_{ii}$ for each vertex
+and $(E_{ij}+E_{ji})/\sqrt2$ for each edge. This is Frobenius orthonormal and
+\[
+ S_L=S_R=\operatorname{diag}
+ \left(1+\frac{\deg(1)}2,\ldots,1+\frac{\deg(n)}2\right).
+\]
+The no-split profile is controlled by $1+\Delta/2$. More generally, querying
+the $s$ highest-degree coordinate directions exactly leaves residual leverage
+$1+d_{s+1}/2$, where $d_1\ge\cdots\ge d_n$ are the degrees.
+
+\section{Protocol for the Profile Illustration}
+\label{app:experiment}
+
+Figure 1 in the main paper uses $32\times32$ circulant, Toeplitz, and path
+precision families with their normalized bases above. For each family, NumPy
+generator seed 20260729 produces a standard Gaussian matrix. We subtract its
+exact Frobenius projection onto the family and normalize the remaining
+residual $R$ to $\|R\|_F=1$. The structured optimum is set to zero because the
+coefficient error induced by an orthogonal residual is translation invariant.
+
+For each $k\in\{2,3,4,6,8,12,16,24,32\}$, we draw 120 independent standard
+Gaussian matrices $G\in\mathbb R^{32\times k}$ and solve
+\[
+ \widehat B\in\arg\min_{B\in\cL}\|(R-B)G\|_F^2
+\]
+with NumPy's dense least-squares solver. The reported statistic is
+$\|\widehat B\|_F^2/\|R\|_F^2$, which equals squared excess over the optimum
+by orthogonality. Solid curves are medians and dotted curves are 90th
+percentiles. The supplementary file \texttt{reproduce\_profile.py} generates
+the figure using NumPy 2.2.6 and Matplotlib 3.10.9. It uses one CPU process,
+no external data, and completes in under one minute on a conventional compute
+node.
 
 \bibliography{references}
 
