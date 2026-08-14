@@ -15,10 +15,25 @@ Amsel, N., Chen, T., Duman~Keles, F., Halikias, D., Musco, C., and Musco, C.
 \newblock {\em SIAM Journal on Matrix Analysis and Applications},
   47(2):483--511.
 
+\bibitem[Amsel et~al., 2026c]{amsel2026hss}
+Amsel, N., Chen, T., Duman~Keles, F., Halikias, D., Musco, C., Musco, C., and
+  Persson, D. (2026c).
+\newblock Quasi-optimal hierarchically semi-separable matrix approximation.
+\newblock {\em SIAM Journal on Matrix Analysis and Applications},
+  47(2):586--621.
+
 \bibitem[Buchholz, 2001]{buchholz2001operator}
 Buchholz, A. (2001).
 \newblock Operator {K}hintchine inequality in non-commutative probability.
 \newblock {\em Mathematische Annalen}, 319(1):1--16.
+
+\bibitem[Chen et~al., 2025]{chen2025hodlr}
+Chen, T., Duman~Keles, F., Halikias, D., Musco, C., Musco, C., and Persson, D.
+  (2025).
+\newblock Near-optimal hierarchical matrix approximation from matrix-vector
+  products.
+\newblock In {\em Proceedings of the 2025 Annual ACM-SIAM Symposium on Discrete
+  Algorithms}, pages 2656--2692. SIAM.
 
 \bibitem[Chen and Price, 2019]{chen2019active}
 Chen, X. and Price, E. (2019).
@@ -65,6 +80,11 @@ Musco, C. and Ramesh, I. (2026).
 \newblock Nearly instance optimal sparse matrix approximation from
   matrix-vector products.
 \newblock {\em arXiv preprint arXiv:2606.12179}.
+
+\bibitem[Smith et~al., 2026]{smith2026adaptive}
+Smith, A.~I., Do, E., and Chen, C. (2026).
+\newblock Adaptive, matrix-free low-rank approximation.
+\newblock {\em arXiv preprint arXiv:2607.06758}.
 
 \bibitem[Tropp, 2015]{tropp2015expected}
 Tropp, J.~A. (2015).
