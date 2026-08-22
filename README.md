@@ -62,7 +62,7 @@ dimension-adaptive profiles.
 
 ## Keywords
 
-pure, relative, structured, matrix, learning, square-root, matvecs, known, dimensional
+matrix-vector queries, relative error approximation, structured matrices, query complexity, randomized linear algebra, spectral estimation
 
 ## Files
 
